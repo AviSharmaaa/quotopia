@@ -13,7 +13,7 @@ export default function Upload() {
   const router = useRouter();
 
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [canUpload, setCanUpload] = useState<boolean>(false);
+  const [imageUploaded, setImageUploaded] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
   const [quote, setQuote] = useState<string>('');
@@ -26,7 +26,7 @@ export default function Upload() {
       const imageUrl = URL.createObjectURL(file);
       setSelectedImage(imageUrl);
       setFile(file);
-      setCanUpload(true);
+      setImageUploaded(true);
     }
   };
 
@@ -38,14 +38,9 @@ export default function Upload() {
   const handleUploadClick = async () => {
     const mediaUrl = await quotesService.uploadImage(file!);
     if (typeof mediaUrl === 'string') {
-      toast({
-        title: 'Image Uploaded!',
-        description: 'Your image has been uploaded successfully!',
-        variant: 'success',
-      });
       setUploadedImageUrl(mediaUrl);
-      setCanUpload(false);
     } else {
+      setUploadedImageUrl(null);
       toast({
         title: 'Oops! Something went wrong',
         description: "Couldn't upload your image. Try again later!",
@@ -64,23 +59,11 @@ export default function Upload() {
   };
 
   const handleShareClick = async () => {
-    if (!uploadedImageUrl) {
-      toast({
-        title: 'Image Required!',
-        description: 'Please upload an image before sharing your quote!',
-        variant: 'destructive',
-      });
+    await handleUploadClick();
+    if (uploadedImageUrl === null || uploadedImageUrl.length === 0) {
       return;
     }
 
-    if (quote.length == 0) {
-      toast({
-        title: 'Quote Required!',
-        description: 'Please enter a quote before sharing!',
-        variant: 'destructive',
-      });
-      return;
-    }
     const response = await quotesService.shareQuote(quote, uploadedImageUrl!);
 
     if (response === 'success') {
@@ -89,8 +72,14 @@ export default function Upload() {
         description: 'Your wisdom has been shared with the world!',
         variant: 'success',
       });
+
+      setSelectedImage(null);
+      setImageUploaded(false);
+      setFile(null);
+      setUploadedImageUrl(null);
+      setQuote('');
       setCanShareQuote(false);
-      setCanUpload(false);
+
       router.back();
     } else {
       toast({
@@ -120,12 +109,12 @@ export default function Upload() {
           </button>,
         ]}
       />
-      <div className="flex m-8 justify-between">
-        <div className="flex-col w-[50%]">
-          <h1 className="text-2xl font-bold mb-4">Upload Image Here</h1>
+      <div className="flex m-8 mt-6 lg:justify-between justify-center">
+        <div className="flex-col lg:w-[50%] w-full">
+          <h1 className="text-2xl font-bold mb-4 lg:text-start text-center">Upload Image Here</h1>
           <div
             {...getRootProps()}
-            className={`w-full h-64 border-2 border-dashed rounded-lg flex flex-col justify-center items-center ${
+            className={`md:sm:relative w-full h-64 border-2 border-dashed rounded-lg flex flex-col justify-center items-center ${
               isDragActive ? 'border-blue-500' : 'border-gray-300'
             }`}
           >
@@ -136,46 +125,41 @@ export default function Upload() {
               <p>Drag &lsquo;n&rsquo; drop an image here, or click to select one</p>
             )}
           </div>
-          <button
-            onClick={handleUploadClick}
-            disabled={!canUpload}
-            className={`bg-black text-white font-bold py-2 px-4 rounded mt-4 ${
-              canUpload ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'
-            }`}
-          >
-            Upload
-          </button>
         </div>
         {selectedImage && (
-          <div className="relative w-64 h-64 mt-4">
+          <div className="lg:relative absolute w-64 h-64 mt-4 pointer-events-none">
             <Image
               src={selectedImage}
               alt="Selected Image"
               layout="fill"
               objectFit="cover"
-              className="rounded-lg mt-8"
+              className="rounded-lg mt-8 lg:p-0 p-4"
             />
           </div>
         )}
       </div>
-      <div className="m-8 mt-14 w-1/2">
-        <h2 className="text-xl font-bold mb-4">Drop Some Wisdom</h2>
-        <textarea
-          value={quote}
-          onChange={handleQuoteChange}
-          className="w-full h-48 p-2 border border-gray-300 rounded-lg"
-          placeholder="Run your wisdom wild here (max 255 characters)"
-        />
-        <p className="text-right text-sm text-gray-500">{quote.length}/255</p>
-        <button
-          onClick={handleShareClick}
-          disabled={!canShareQuote}
-          className={`bg-black text-white font-bold py-2 px-4 rounded ${
-            canShareQuote ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'
-          }`}
-        >
-          Share
-        </button>
+      <div className="flex-col m-8 mt-14 lg:justify-start justify-center">
+        <div className="lg:w-1/2 w-full ">
+          <h2 className="text-xl font-bold mb-4 lg:text-start text-center">Drop Some Wisdom</h2>
+          <textarea
+            value={quote}
+            onChange={handleQuoteChange}
+            className="w-full h-48 p-2 border border-gray-300 rounded-lg"
+            placeholder="Run your wisdom wild here (max 255 characters)"
+          />
+          <p className="text-right text-sm text-gray-500">{quote.length}/255</p>
+        </div>
+        <div className="w-full flex lg:justify-start justify-center">
+          <button
+            onClick={handleShareClick}
+            disabled={!canShareQuote || !imageUploaded}
+            className={`bg-black text-white font-bold py-2 px-10 rounded g:justify-start justify-center${
+              canShareQuote && imageUploaded ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'
+            }`}
+          >
+            Share
+          </button>
+        </div>
       </div>
     </div>
   );

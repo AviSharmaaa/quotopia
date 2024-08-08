@@ -1,3 +1,4 @@
+/* eslint-disable */
 'use client';
 import Image from 'next/image';
 import { Card, CardDescription, CardFooter, CardTitle } from '@/app/components/ui/card';
@@ -27,13 +28,13 @@ export default function Feed() {
     if (scrollPosition > 90 && !loading) {
       getQuotes('scroll');
     }
-  }, [scrollPosition, loading]);
+  }, [scrollPosition]);
 
   useEffect(() => {
     if (!loading) {
       getQuotes('initial');
     }
-  }, [loading]);
+  }, []);
 
   const navigateToCreateQuote = () => {
     router.push('/create-quote');
@@ -59,16 +60,16 @@ export default function Feed() {
         ]}
       />
       <div>
-        <div className="flex-col flex justify-center items-center p-8">
+        <div className="flex-col flex justify-center items-center p-6">
           {quotes.map((quote) => (
-            <Card key={quote.id} className="quote-card relative overflow-hidden m-8">
+            <Card key={quote.id} className="quote-card relative overflow-hidden lg:mb-8 mt-4 mb-4">
               <div className="relative">
                 <Image
                   src={quote.mediaUrl}
                   alt="Quotopia"
                   width={500}
                   height={500}
-                  className="object-cover w-[500px] h-[500px]"
+                  className="object-cover w-[500px] h-[550px]"
                   priority
                 />
                 <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 p-4">
@@ -94,12 +95,12 @@ export default function Feed() {
           ))}
         </div>
         <button
-          className="fixed bottom-4 right-4 w-14 h-14 rounded-full shadow-2xl bg-black mr-4"
+          className="fixed bottom-4 right-1 lg:w-14 lg:h-14 w-12 h-12 rounded-full shadow-2xl bg-black mr-4"
           type="button"
           onClick={navigateToCreateQuote}
         >
           <span className="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 text-white">
-            <MdAdd size={32} />
+            <MdAdd className="lg:w-8 lg:h-8 w-6 h-6" />
           </span>
         </button>
       </div>

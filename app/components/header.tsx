@@ -17,7 +17,6 @@ const Header: React.FC<HeaderProps> = ({ actionButtons }) => {
           alt="Quotopia"
           width={35}
           height={35}
-          className="hidden lg:block"
         />
         Quotopia
       </h1>
