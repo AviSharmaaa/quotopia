@@ -1,19 +1,14 @@
-"use client";
-import Image from "next/image";
-import {
-  Card,
-  CardDescription,
-  CardFooter,
-  CardTitle,
-} from "@/app/components/ui/card";
-import React, { useEffect, useState } from "react";
-import quotesService from "../services/quotes";
-import useScrollPosition from "../hooks/scroll_position";
-import { useRouter } from "next/navigation";
+'use client';
+import Image from 'next/image';
+import { Card, CardDescription, CardFooter, CardTitle } from '@/app/components/ui/card';
+import React, { useEffect, useState } from 'react';
+import quotesService from '../services/quotes';
+import useScrollPosition from '../hooks/scroll_position';
+import { useRouter } from 'next/navigation';
 
-import { MdAdd, MdLogout } from "react-icons/md";
-import Header from "../components/header";
-import authService from "../services/auth";
+import { MdAdd, MdLogout } from 'react-icons/md';
+import Header from '../components/header';
+import authService from '../services/auth';
 
 export default function Feed() {
   const router = useRouter();
@@ -30,18 +25,18 @@ export default function Feed() {
 
   useEffect(() => {
     if (scrollPosition > 90 && !loading) {
-      getQuotes("scroll");
+      getQuotes('scroll');
     }
-  }, [scrollPosition]);
+  }, [scrollPosition, loading]);
 
   useEffect(() => {
     if (!loading) {
-      getQuotes("initial");
+      getQuotes('initial');
     }
-  }, []);
+  }, [loading]);
 
   const navigateToCreateQuote = () => {
-    router.push("/create-quote");
+    router.push('/create-quote');
   };
 
   return (
@@ -49,6 +44,7 @@ export default function Feed() {
       <Header
         actionButtons={[
           <button
+            key={1}
             className="relative w-10 max-w-[40px] h-10 max-h-[40px] rounded-full border-black border-2"
             type="button"
             onClick={() => {
@@ -65,10 +61,7 @@ export default function Feed() {
       <div>
         <div className="flex-col flex justify-center items-center p-8">
           {quotes.map((quote) => (
-            <Card
-              key={quote.id}
-              className="quote-card relative overflow-hidden m-8"
-            >
+            <Card key={quote.id} className="quote-card relative overflow-hidden m-8">
               <div className="relative">
                 <Image
                   src={quote.mediaUrl}

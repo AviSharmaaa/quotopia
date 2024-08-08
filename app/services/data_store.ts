@@ -18,4 +18,6 @@ class DataStore {
     }
 }
 
-export default new DataStore();
+const datastore = new DataStore()
+
+export default datastore;

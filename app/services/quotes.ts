@@ -86,7 +86,7 @@ class QuotesService {
             }
 
             const response = await this.client.post('/postQuote', payload)
-            if(response.status !== 200) {
+            if (response.status !== 200) {
                 return new Error();
             }
             return 'success';
@@ -96,4 +96,6 @@ class QuotesService {
     }
 }
 
-export default new QuotesService();
+const quoteService = new QuotesService()
+
+export default quoteService;

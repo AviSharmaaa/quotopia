@@ -1,13 +1,13 @@
-"use client";
-import React, { ChangeEvent, useState } from "react";
-import Image from "next/image";
-import { useDropzone } from "react-dropzone";
-import { MdLogout } from "react-icons/md";
-import quotesService from "../services/quotes";
-import { toast } from "../components/ui/use-toast";
-import { useRouter } from "next/navigation";
-import Header from "../components/header";
-import authService from "../services/auth";
+'use client';
+import React, { ChangeEvent, useState } from 'react';
+import Image from 'next/image';
+import { useDropzone } from 'react-dropzone';
+import { MdLogout } from 'react-icons/md';
+import quotesService from '../services/quotes';
+import { toast } from '../components/ui/use-toast';
+import { useRouter } from 'next/navigation';
+import Header from '../components/header';
+import authService from '../services/auth';
 
 export default function Upload() {
   const router = useRouter();
@@ -16,7 +16,7 @@ export default function Upload() {
   const [canUpload, setCanUpload] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
-  const [quote, setQuote] = useState<string>("");
+  const [quote, setQuote] = useState<string>('');
   const [canShareQuote, setCanShareQuote] = useState<boolean>(false);
 
   const onDrop = (acceptedFiles: File[]) => {
@@ -32,24 +32,24 @@ export default function Upload() {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: { "image/*": [".jpeg", ".png", ".jpg"] },
+    accept: { 'image/*': ['.jpeg', '.png', '.jpg'] },
   });
 
   const handleUploadClick = async () => {
     const mediaUrl = await quotesService.uploadImage(file!);
-    if (typeof mediaUrl === "string") {
+    if (typeof mediaUrl === 'string') {
       toast({
-        title: "Image Uploaded!",
-        description: "Your image has been uploaded successfully!",
-        variant: "success",
+        title: 'Image Uploaded!',
+        description: 'Your image has been uploaded successfully!',
+        variant: 'success',
       });
       setUploadedImageUrl(mediaUrl);
       setCanUpload(false);
     } else {
       toast({
-        title: "Oops! Something went wrong",
+        title: 'Oops! Something went wrong',
         description: "Couldn't upload your image. Try again later!",
-        variant: "destructive",
+        variant: 'destructive',
       });
     }
   };
@@ -66,28 +66,28 @@ export default function Upload() {
   const handleShareClick = async () => {
     if (!uploadedImageUrl) {
       toast({
-        title: "Image Required!",
-        description: "Please upload an image before sharing your quote!",
-        variant: "destructive",
+        title: 'Image Required!',
+        description: 'Please upload an image before sharing your quote!',
+        variant: 'destructive',
       });
       return;
     }
 
     if (quote.length == 0) {
       toast({
-        title: "Quote Required!",
-        description: "Please enter a quote before sharing!",
-        variant: "destructive",
+        title: 'Quote Required!',
+        description: 'Please enter a quote before sharing!',
+        variant: 'destructive',
       });
       return;
     }
     const response = await quotesService.shareQuote(quote, uploadedImageUrl!);
 
-    if (response === "success") {
+    if (response === 'success') {
       toast({
-        title: "Quote Shared!",
-        description: "Your wisdom has been shared with the world!",
-        variant: "success",
+        title: 'Quote Shared!',
+        description: 'Your wisdom has been shared with the world!',
+        variant: 'success',
       });
       setCanShareQuote(false);
       setCanUpload(false);
@@ -95,8 +95,8 @@ export default function Upload() {
     } else {
       toast({
         title: "Oh no! Couldn't share your quote",
-        description: "An error occurred. Please try again later!",
-        variant: "destructive",
+        description: 'An error occurred. Please try again later!',
+        variant: 'destructive',
       });
     }
   };
@@ -106,11 +106,12 @@ export default function Upload() {
       <Header
         actionButtons={[
           <button
+            key={1}
             className="relative w-10 max-w-[40px] h-10 max-h-[40px] rounded-full border-black border-2"
             type="button"
             onClick={() => {
               authService.logout();
-              window.location.reload()
+              window.location.reload();
             }}
           >
             <span className="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
@@ -125,21 +126,21 @@ export default function Upload() {
           <div
             {...getRootProps()}
             className={`w-full h-64 border-2 border-dashed rounded-lg flex flex-col justify-center items-center ${
-              isDragActive ? "border-blue-500" : "border-gray-300"
+              isDragActive ? 'border-blue-500' : 'border-gray-300'
             }`}
           >
             <input {...getInputProps()} />
             {isDragActive ? (
               <p>Drop the files here ...</p>
             ) : (
-              <p>Drag 'n' drop an image here, or click to select one</p>
+              <p>Drag &lsquo;n&rsquo; drop an image here, or click to select one</p>
             )}
           </div>
           <button
             onClick={handleUploadClick}
             disabled={!canUpload}
             className={`bg-black text-white font-bold py-2 px-4 rounded mt-4 ${
-              canUpload ? "cursor-pointer" : "cursor-not-allowed opacity-50"
+              canUpload ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'
             }`}
           >
             Upload
@@ -170,7 +171,7 @@ export default function Upload() {
           onClick={handleShareClick}
           disabled={!canShareQuote}
           className={`bg-black text-white font-bold py-2 px-4 rounded ${
-            canShareQuote ? "cursor-pointer" : "cursor-not-allowed opacity-50"
+            canShareQuote ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'
           }`}
         >
           Share
